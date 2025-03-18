@@ -1,28 +1,23 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BackForFrontVue2.Services;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace BackForFrontVue2.Controllers
+[ApiController]
+[Route("api/user")]
+public class UserController : ControllerBase
 {
-    [ApiController]
-    [Route("CallBackFront")]
-    public class CallBackFrontController : Controller
-    {
-        [HttpGet]
-        public IActionResult GetWeather()
-        {
-            var weather = new { Temp = 20, Condition = "Sunny" };
-            return Ok(weather);
-        }
+    private readonly DatabaseService _databaseService;
 
-        [HttpPost]
-        public IActionResult PostWeather([FromBody] WeatherRequest request)
-        {
-            return Ok(new { Message = "Weather updated", Data = request });
-        }
+    public UserController(DatabaseService databaseService)
+    {
+        _databaseService = databaseService;
     }
 
-    public class WeatherRequest
+    [HttpGet("languageSkills/{username}")]
+    public async Task<IActionResult> GetUserLanguageSkills(string username)
     {
-        public int Temp { get; set; }
-        public string Condition { get; set; }
+        var result = await _databaseService.GetUserLanguageSkills(username);
+        return Ok(result);
     }
 }
